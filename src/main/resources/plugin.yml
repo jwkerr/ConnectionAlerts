@@ -1,0 +1,4 @@
+name: ConnectionAlerts
+version: '${project.version}'
+main: net.earthmc.connectionalerts.ConnectionAlerts
+api-version: '1.19'
