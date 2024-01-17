@@ -1,4 +1,21 @@
 name: ConnectionAlerts
-version: '${project.version}'
+version: "${project.version}"
 main: net.earthmc.connectionalerts.ConnectionAlerts
-api-version: '1.19'
+api-version: "1.19"
+authors: [Fruitloopins]
+description: Allow players to opt in to join/quit messages on a Towny server
+depend:
+  - Towny
+
+commands:
+  connectionalerts:
+    description: "Interact with the ConnectionAlerts plugin"
+    usage: "/connectionalerts {alert level}"
+    permission: "connectionalerts.command.connectionalerts"
+    aliases:
+      - "ca"
+
+permissions:
+  connectionalerts.command.connectionalerts:
+    description: "Grants permission to use the connectionalerts command"
+    default: true

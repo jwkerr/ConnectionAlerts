@@ -1,2 +1,6 @@
-package net.earthmc.connectionalerts.object;public enum ConnectionType {
+package net.earthmc.connectionalerts.object;
+
+public enum ConnectionType {
+    JOIN,
+    QUIT
 }
