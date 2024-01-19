@@ -21,7 +21,10 @@ public class PlayerConnectionListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Resident joiningResident = townyAPI.getResident(event.getPlayer());
+        Player player = event.getPlayer();
+        if (player.hasPermission("connectionalerts.exempt")) return;
+
+        Resident joiningResident = townyAPI.getResident(player);
         if (joiningResident == null) return;
 
         handleConnectionStateChange(joiningResident, ConnectionType.JOIN);
@@ -29,7 +32,10 @@ public class PlayerConnectionListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        Resident joiningResident = townyAPI.getResident(event.getPlayer());
+        Player player = event.getPlayer();
+        if (player.hasPermission("connectionalerts.exempt")) return;
+
+        Resident joiningResident = townyAPI.getResident(player);
         if (joiningResident == null) return;
 
         handleConnectionStateChange(joiningResident, ConnectionType.QUIT);

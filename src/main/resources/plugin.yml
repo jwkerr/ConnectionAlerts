@@ -16,6 +16,10 @@ commands:
       - "ca"
 
 permissions:
+  connectionalerts.exempt:
+    description: "Exempts the player from join messages in chat"
+    default: false
+
   connectionalerts.command.connectionalerts:
     description: "Grants permission to use the connectionalerts command"
     default: true
