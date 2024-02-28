@@ -43,7 +43,7 @@ public class ConnectionAlertsCommand implements TabExecutor {
                 ResidentMetadataManager rmm = new ResidentMetadataManager();
                 rmm.setShouldAlertForFriends(resident, !rmm.getShouldAlertForFriends(resident));
 
-                player.sendMessage(Component.text("You will now be alerted when a friend connects or disconnects"));
+                player.sendMessage(Component.text("You will now be alerted when a friend connects or disconnects", NamedTextColor.RED));
 
                 return true;
             }
