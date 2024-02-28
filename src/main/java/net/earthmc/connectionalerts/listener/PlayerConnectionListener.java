@@ -16,6 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.List;
+
 public class PlayerConnectionListener implements Listener {
     private final TownyAPI townyAPI = TownyAPI.getInstance();
 
@@ -50,12 +52,19 @@ public class PlayerConnectionListener implements Listener {
             AlertLevel alertLevel = rmm.getResidentAlertLevel(playerResident);
             if (alertLevel == AlertLevel.NONE) continue;
 
+            if (alertLevel == AlertLevel.FRIEND) handleFriendAlertLevel(playerResident, joiningResident, connectionType);
             if (alertLevel == AlertLevel.TOWN) handleTownAlertLevel(playerResident, joiningResident, connectionType);
             if (alertLevel == AlertLevel.NATION) handleNationAlertLevel(playerResident, joiningResident, connectionType);
             if (alertLevel == AlertLevel.ALL) handleAllAlertLevel(playerResident, joiningResident, connectionType);
         }
     }
 
+    private void handleFriendAlertLevel(Resident playerResident, Resident joiningResident, ConnectionType connectionType) {
+        List<Resident> playerFriends = playerResident.getFriends();
+        if (playerFriends.contains(joiningResident)) {
+            sendFriendConnectionAlert(playerResident.getPlayer(), joiningResident, connectionType);
+        }
+    }
     private void handleTownAlertLevel(Resident playerResident, Resident joiningResident, ConnectionType connectionType) {
         Town town = playerResident.getTownOrNull();
         if (town == null) return;
@@ -99,6 +108,10 @@ public class PlayerConnectionListener implements Listener {
         sendGenericConnectionAlert(playerResident.getPlayer(), joiningResident, connectionType);
     }
 
+    private void sendFriendConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
+        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType);
+        player.sendMessage(Component.text(connectionAlertString, NamedTextColor.GREEN));
+    }
     private void sendTownConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
         String connectionAlertString = getConnectionAlertString(joiningResident, connectionType);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.AQUA));

@@ -2,6 +2,7 @@ package net.earthmc.connectionalerts.object;
 
 public enum AlertLevel {
     NONE,
+    FRIEND,
     TOWN,
     NATION,
     ALL;

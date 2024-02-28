@@ -39,6 +39,7 @@ public class ConnectionAlertsCommand implements TabExecutor {
         AlertLevel alertLevel;
         switch (args[0]) {
             case "none" -> alertLevel = AlertLevel.NONE;
+            case "friend" -> alertLevel = AlertLevel.FRIEND;
             case "town" -> alertLevel = AlertLevel.TOWN;
             case "nation" -> alertLevel = AlertLevel.NATION;
             case "all" -> alertLevel = AlertLevel.ALL;
@@ -58,7 +59,7 @@ public class ConnectionAlertsCommand implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        List<String> availableArguments = List.of("none", "town", "nation", "all");
+        List<String> availableArguments = List.of("none", "friend", "town", "nation", "all");
 
         if (args.length == 1) {
             if (args[0].isEmpty()) return availableArguments;
