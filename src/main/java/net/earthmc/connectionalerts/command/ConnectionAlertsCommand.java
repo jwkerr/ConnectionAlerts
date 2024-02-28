@@ -39,7 +39,14 @@ public class ConnectionAlertsCommand implements TabExecutor {
         AlertLevel alertLevel;
         switch (args[0]) {
             case "none" -> alertLevel = AlertLevel.NONE;
-            case "friend" -> alertLevel = AlertLevel.FRIEND;
+            case "friends" -> {
+                ResidentMetadataManager rmm = new ResidentMetadataManager();
+                rmm.setShouldAlertForFriends(resident, !rmm.getShouldAlertForFriends(resident));
+
+                player.sendMessage(Component.text("You will now be alerted when a friend connects or disconnects"));
+
+                return true;
+            }
             case "town" -> alertLevel = AlertLevel.TOWN;
             case "nation" -> alertLevel = AlertLevel.NATION;
             case "all" -> alertLevel = AlertLevel.ALL;
