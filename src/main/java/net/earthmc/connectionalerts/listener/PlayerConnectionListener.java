@@ -47,6 +47,8 @@ public class PlayerConnectionListener implements Listener {
             if (playerResident == null) continue;
 
             ResidentMetadataManager rmm = new ResidentMetadataManager();
+            if (rmm.getShouldAlertForFriends(playerResident)) sendFriendConnectionAlert(player, joiningResident, connectionType);
+
             AlertLevel alertLevel = rmm.getResidentAlertLevel(playerResident);
             if (alertLevel == AlertLevel.NONE) continue;
 
@@ -97,6 +99,11 @@ public class PlayerConnectionListener implements Listener {
         }
 
         sendGenericConnectionAlert(playerResident.getPlayer(), joiningResident, connectionType);
+    }
+
+    private void sendFriendConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
+        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType);
+        player.sendMessage(Component.text(connectionAlertString, NamedTextColor.GREEN));
     }
 
     private void sendTownConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
