@@ -47,7 +47,10 @@ public class PlayerConnectionListener implements Listener {
             if (playerResident == null) continue;
 
             ResidentMetadataManager rmm = new ResidentMetadataManager();
-            if (rmm.getShouldAlertForFriends(playerResident)) sendFriendConnectionAlert(player, joiningResident, connectionType);
+            if (rmm.getShouldAlertForFriends(playerResident) && playerResident.hasFriend(joiningResident)) {
+                sendFriendConnectionAlert(player, joiningResident, connectionType);
+                return;
+            }
 
             AlertLevel alertLevel = rmm.getResidentAlertLevel(playerResident);
             if (alertLevel == AlertLevel.NONE) continue;
