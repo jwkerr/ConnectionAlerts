@@ -4,6 +4,7 @@ main: net.earthmc.connectionalerts.ConnectionAlerts
 api-version: "1.19"
 authors: [Fruitloopins]
 description: Allow players to opt in to join/quit messages on a Towny server
+folia-supported: true
 depend:
   - Towny
 
