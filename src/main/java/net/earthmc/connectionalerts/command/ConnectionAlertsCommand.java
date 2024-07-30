@@ -52,6 +52,19 @@ public class ConnectionAlertsCommand implements TabExecutor {
 
                 return true;
             }
+            case "party" -> {
+                ResidentMetadataManager rmm = new ResidentMetadataManager();
+
+                boolean shouldAlertForParty = rmm.getShouldAlertForParty(resident);
+                rmm.setShouldAlertForParty(resident, !shouldAlertForParty);
+                if (shouldAlertForParty) {
+                    player.sendMessage(Component.text("You will no longer be alerted when a party member connects or disconnects", NamedTextColor.GREEN));
+                } else {
+                    player.sendMessage(Component.text("You will now be alerted when a party member connects or disconnects", NamedTextColor.GREEN));
+                }
+
+                return true;
+            }
             case "town" -> alertLevel = AlertLevel.TOWN;
             case "nation" -> alertLevel = AlertLevel.NATION;
             case "all" -> alertLevel = AlertLevel.ALL;
@@ -71,7 +84,7 @@ public class ConnectionAlertsCommand implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        List<String> availableArguments = List.of("none", "friends", "town", "nation", "all");
+        List<String> availableArguments = List.of("none", "friends", "party", "town", "nation", "all");
 
         if (args.length == 1) {
             if (args[0].isEmpty()) return availableArguments;
