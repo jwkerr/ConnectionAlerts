@@ -140,6 +140,9 @@ public class PlayerConnectionListener implements Listener {
 
     private String getConnectionAlertString(Resident joiningResident, ConnectionType connectionType, String symbol) {
         String joinedOrLeft = connectionType == ConnectionType.JOIN ? "joined" : "left";
+        if (symbol == null) {
+            return joiningResident.getName() + " " + joinedOrLeft + " the game";
+        }
         return symbol + " " + joiningResident.getName() + " " + joinedOrLeft + " the game";
     }
 }
