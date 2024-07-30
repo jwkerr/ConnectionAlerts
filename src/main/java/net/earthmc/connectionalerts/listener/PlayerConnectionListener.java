@@ -1,6 +1,8 @@
 package net.earthmc.connectionalerts.listener;
 
-import com.gmail.nossr50.api.PartyAPI;
+import com.gmail.nossr50.datatypes.party.Party;
+import com.gmail.nossr50.mcMMO;
+import com.gmail.nossr50.party.PartyManager;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -17,7 +19,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+@SuppressWarnings("ConstantConditions") // Here just so Towny shuts up about residents potentially being null
 public class PlayerConnectionListener implements Listener {
+
     private final TownyAPI townyAPI = TownyAPI.getInstance();
 
     @EventHandler
@@ -52,7 +56,8 @@ public class PlayerConnectionListener implements Listener {
                 sendFriendConnectionAlert(player, joiningResident, connectionType);
                 return;
             }
-            if (rmm.getShouldAlertForParty(playerResident) && PartyAPI.inSameParty(joiningResident.getPlayer(), player)) {
+
+            if (rmm.getShouldAlertForParty(playerResident) && arePlayersInSameParty(playerResident.getPlayer(), player)) {
                 sendPartyConnectionAlert(player, joiningResident, connectionType);
                 return;
             }
@@ -64,6 +69,15 @@ public class PlayerConnectionListener implements Listener {
             if (alertLevel == AlertLevel.NATION) handleNationAlertLevel(playerResident, joiningResident, connectionType);
             if (alertLevel == AlertLevel.ALL) handleAllAlertLevel(playerResident, joiningResident, connectionType);
         }
+    }
+
+    private boolean arePlayersInSameParty(Player playerOne, Player playerTwo) {
+        PartyManager pm = mcMMO.p.getPartyManager();
+
+        Party party = pm.getParty(playerOne);
+        if (party == null) return false;
+
+        return party.hasMember(playerTwo.getUniqueId());
     }
 
     private void handleTownAlertLevel(Resident playerResident, Resident joiningResident, ConnectionType connectionType) {
@@ -115,21 +129,31 @@ public class PlayerConnectionListener implements Listener {
     }
 
     private void sendPartyConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
-        String partyName = PartyAPI.getPartyName(joiningResident.getPlayer());
-        String symbol = PartyAPI.getPartyLeader(partyName).equals(joiningResident.getName()) ? "\uD83D\uDC51" : null;
-        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, symbol);
+        Player residentPlayer = joiningResident.getPlayer();
+
+        Party party = mcMMO.p.getPartyManager().getParties() // Using this horrific method because mcMMO's API doesn't work correctly if the player just joined
+                .stream()
+                .filter(p -> p.hasMember(joiningResident.getUUID()))
+                .findFirst()
+                .orElse(null);
+
+        if (party == null) return; // This party *should* never be null given the code before this method checks they are in one, but you never know with mcMMO
+
+        String prefix = party.getLeader().getUniqueId().equals(residentPlayer.getUniqueId()) ? "\uD83D\uDC51" : null;
+
+        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, prefix);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.DARK_PURPLE));
     }
 
     private void sendTownConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
-        String symbol = joiningResident.isMayor() ? "\uD83D\uDC51" : null;
-        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, symbol);
+        String prefix = joiningResident.isMayor() ? "\uD83D\uDC51" : null;
+        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, prefix);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.AQUA));
     }
 
     private void sendNationConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
-        String symbol = joiningResident.isKing() ? "\uD83D\uDC51" : null;
-        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, symbol);
+        String prefix = joiningResident.isKing() ? "\uD83D\uDC51" : null;
+        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, prefix);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.YELLOW));
     }
 
@@ -138,11 +162,10 @@ public class PlayerConnectionListener implements Listener {
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.GRAY));
     }
 
-    private String getConnectionAlertString(Resident joiningResident, ConnectionType connectionType, String symbol) {
+    private String getConnectionAlertString(Resident joiningResident, ConnectionType connectionType, String prefix) {
         String joinedOrLeft = connectionType == ConnectionType.JOIN ? "joined" : "left";
-        if (symbol == null) {
-            return joiningResident.getName() + " " + joinedOrLeft + " the game";
-        }
-        return symbol + " " + joiningResident.getName() + " " + joinedOrLeft + " the game";
+        if (prefix == null) return joiningResident.getName() + " " + joinedOrLeft + " the game";
+
+        return prefix + " " + joiningResident.getName() + " " + joinedOrLeft + " the game";
     }
 }

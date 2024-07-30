@@ -6,6 +6,7 @@ import com.palmergames.bukkit.towny.object.metadata.StringDataField;
 import net.earthmc.connectionalerts.object.AlertLevel;
 
 public class ResidentMetadataManager {
+
     private final String alertLevelKey = "connectionalerts_alert_level";
     private final String shouldAlertForFriendsKey = "connectionalerts_should_alert_for_friends";
     private final String shouldAlertForPartyKey = "connectionalerts_should_alert_for_party";

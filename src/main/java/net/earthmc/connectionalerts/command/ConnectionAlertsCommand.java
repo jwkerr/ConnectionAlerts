@@ -62,6 +62,7 @@ public class ConnectionAlertsCommand implements TabExecutor {
                 } else {
                     player.sendMessage(Component.text("You will now be alerted when a party member connects or disconnects", NamedTextColor.GREEN));
                 }
+
                 return true;
             }
             case "town" -> alertLevel = AlertLevel.TOWN;
