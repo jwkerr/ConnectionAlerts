@@ -1,5 +1,6 @@
 package net.earthmc.connectionalerts.listener;
 
+import com.gmail.nossr50.api.PartyAPI;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -49,6 +50,10 @@ public class PlayerConnectionListener implements Listener {
             ResidentMetadataManager rmm = new ResidentMetadataManager();
             if (rmm.getShouldAlertForFriends(playerResident) && playerResident.hasFriend(joiningResident)) {
                 sendFriendConnectionAlert(player, joiningResident, connectionType);
+                return;
+            }
+            if (rmm.getShouldAlertForParty(playerResident) && PartyAPI.inSameParty(joiningResident.getPlayer(), player)) {
+                sendPartyConnectionAlert(player, joiningResident, connectionType);
                 return;
             }
 
@@ -105,27 +110,36 @@ public class PlayerConnectionListener implements Listener {
     }
 
     private void sendFriendConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
-        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType);
+        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, null);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.GREEN));
     }
 
+    private void sendPartyConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
+        String partyName = PartyAPI.getPartyName(joiningResident.getPlayer());
+        String symbol = PartyAPI.getPartyLeader(partyName).equals(joiningResident.getName()) ? "\uD83D\uDC51" : null;
+        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, symbol);
+        player.sendMessage(Component.text(connectionAlertString, NamedTextColor.DARK_PURPLE));
+    }
+
     private void sendTownConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
-        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType);
+        String symbol = joiningResident.isMayor() ? "\uD83D\uDC51" : null;
+        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, symbol);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.AQUA));
     }
 
     private void sendNationConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
-        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType);
+        String symbol = joiningResident.isKing() ? "\uD83D\uDC51" : null;
+        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, symbol);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.YELLOW));
     }
 
     private void sendGenericConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
-        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType);
+        String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, null);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.GRAY));
     }
 
-    private String getConnectionAlertString(Resident joiningResident, ConnectionType connectionType) {
+    private String getConnectionAlertString(Resident joiningResident, ConnectionType connectionType, String symbol) {
         String joinedOrLeft = connectionType == ConnectionType.JOIN ? "joined" : "left";
-        return joiningResident.getName() + " " + joinedOrLeft + " the game";
+        return symbol + " " + joiningResident.getName() + " " + joinedOrLeft + " the game";
     }
 }
