@@ -57,7 +57,7 @@ public class PlayerConnectionListener implements Listener {
                 return;
             }
 
-            if (rmm.getShouldAlertForParty(playerResident) && arePlayersInSameParty(playerResident.getPlayer(), player)) {
+            if (rmm.getShouldAlertForParty(playerResident) && arePlayersInSameParty(player, joiningResident.getPlayer())) {
                 sendPartyConnectionAlert(player, joiningResident, connectionType);
                 return;
             }
