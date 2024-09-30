@@ -32,7 +32,7 @@ public class PlayerConnectionListener implements Listener {
         Resident joiningResident = townyAPI.getResident(player);
         if (joiningResident == null) return;
 
-        handleConnectionStateChange(joiningResident, ConnectionType.JOIN);
+        handleConnectionStateChange(joiningResident, player, ConnectionType.JOIN);
     }
 
     @EventHandler
@@ -43,26 +43,25 @@ public class PlayerConnectionListener implements Listener {
         Resident joiningResident = townyAPI.getResident(player);
         if (joiningResident == null) return;
 
-        handleConnectionStateChange(joiningResident, ConnectionType.QUIT);
+        handleConnectionStateChange(joiningResident, player, ConnectionType.QUIT);
     }
 
-    private void handleConnectionStateChange(Resident joiningResident, ConnectionType connectionType) {
+    private void handleConnectionStateChange(Resident joiningResident, Player joiningPlayer, ConnectionType connectionType) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             Resident playerResident = townyAPI.getResident(player);
             if (playerResident == null) continue;
 
-            ResidentMetadataManager rmm = new ResidentMetadataManager();
-            if (rmm.getShouldAlertForFriends(playerResident) && playerResident.hasFriend(joiningResident)) {
+            if (ResidentMetadataManager.getShouldAlertForFriends(playerResident) && playerResident.hasFriend(joiningResident)) {
                 sendFriendConnectionAlert(player, joiningResident, connectionType);
                 return;
             }
 
-            if (rmm.getShouldAlertForParty(playerResident) && arePlayersInSameParty(player, joiningResident.getPlayer())) {
+            if (ResidentMetadataManager.getShouldAlertForParty(playerResident) && arePlayersInSameParty(player, joiningPlayer)) {
                 sendPartyConnectionAlert(player, joiningResident, connectionType);
                 return;
             }
 
-            AlertLevel alertLevel = rmm.getResidentAlertLevel(playerResident);
+            AlertLevel alertLevel = ResidentMetadataManager.getResidentAlertLevel(playerResident);
             if (alertLevel == AlertLevel.NONE) continue;
 
             if (alertLevel == AlertLevel.TOWN) handleTownAlertLevel(playerResident, joiningResident, connectionType);
@@ -124,11 +123,13 @@ public class PlayerConnectionListener implements Listener {
     }
 
     private void sendFriendConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
+        if (player == null) return;
         String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, null);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.GREEN));
     }
 
     private void sendPartyConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
+        if (player == null) return;
         Player residentPlayer = joiningResident.getPlayer();
 
         Party party = mcMMO.p.getPartyManager().getParties() // Using this horrific method because mcMMO's API doesn't work correctly if the player just joined
@@ -146,18 +147,21 @@ public class PlayerConnectionListener implements Listener {
     }
 
     private void sendTownConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
+        if (player == null) return;
         String prefix = joiningResident.isMayor() ? "\uD83D\uDC51" : null;
         String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, prefix);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.AQUA));
     }
 
     private void sendNationConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
+        if (player == null) return;
         String prefix = joiningResident.isKing() ? "\uD83D\uDC51" : null;
         String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, prefix);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.YELLOW));
     }
 
     private void sendGenericConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
+        if (player == null) return;
         String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, null);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.GRAY));
     }
