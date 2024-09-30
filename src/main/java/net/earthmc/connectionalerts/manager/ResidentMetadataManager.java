@@ -7,11 +7,11 @@ import net.earthmc.connectionalerts.object.AlertLevel;
 
 public class ResidentMetadataManager {
 
-    private final String alertLevelKey = "connectionalerts_alert_level";
-    private final String shouldAlertForFriendsKey = "connectionalerts_should_alert_for_friends";
-    private final String shouldAlertForPartyKey = "connectionalerts_should_alert_for_party";
+    private static final String alertLevelKey = "connectionalerts_alert_level";
+    private static final String shouldAlertForFriendsKey = "connectionalerts_should_alert_for_friends";
+    private static final String shouldAlertForPartyKey = "connectionalerts_should_alert_for_party";
 
-    public void setResidentAlertLevel(Resident resident, AlertLevel alertLevel) {
+    public static void setResidentAlertLevel(Resident resident, AlertLevel alertLevel) {
         if (!resident.hasMeta(alertLevelKey))
             resident.addMetaData(new StringDataField(alertLevelKey, null));
 
@@ -22,7 +22,7 @@ public class ResidentMetadataManager {
         resident.addMetaData(sdf);
     }
 
-    public AlertLevel getResidentAlertLevel(Resident resident) {
+    public static AlertLevel getResidentAlertLevel(Resident resident) {
         if (resident == null) return null;
 
         StringDataField sdf = (StringDataField) resident.getMetadata(alertLevelKey);
@@ -31,7 +31,7 @@ public class ResidentMetadataManager {
         return AlertLevel.getAlertLevelByName(sdf.getValue());
     }
 
-    public void setShouldAlertForFriends(Resident resident, boolean value) {
+    public static void setShouldAlertForFriends(Resident resident, boolean value) {
         if (!resident.hasMeta(shouldAlertForFriendsKey))
             resident.addMetaData(new BooleanDataField(shouldAlertForFriendsKey, null));
 
@@ -42,7 +42,7 @@ public class ResidentMetadataManager {
         resident.addMetaData(bdf);
     }
 
-    public boolean getShouldAlertForFriends(Resident resident) {
+    public static boolean getShouldAlertForFriends(Resident resident) {
         if (resident == null) return false;
 
         BooleanDataField bdf = (BooleanDataField) resident.getMetadata(shouldAlertForFriendsKey);
@@ -51,7 +51,7 @@ public class ResidentMetadataManager {
         return bdf.getValue();
     }
 
-    public void setShouldAlertForParty(Resident resident, boolean value) {
+    public static void setShouldAlertForParty(Resident resident, boolean value) {
         if (!resident.hasMeta(shouldAlertForPartyKey))
             resident.addMetaData(new BooleanDataField(shouldAlertForPartyKey, null));
 
@@ -62,7 +62,7 @@ public class ResidentMetadataManager {
         resident.addMetaData(bdf);
     }
 
-    public boolean getShouldAlertForParty(Resident resident) {
+    public static boolean getShouldAlertForParty(Resident resident) {
         if (resident == null) return false;
 
         BooleanDataField bdf = (BooleanDataField) resident.getMetadata(shouldAlertForPartyKey);
