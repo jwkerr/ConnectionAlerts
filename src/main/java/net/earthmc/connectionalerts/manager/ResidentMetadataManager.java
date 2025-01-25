@@ -7,15 +7,24 @@ import net.earthmc.connectionalerts.object.AlertLevel;
 
 public class ResidentMetadataManager {
 
-    private final String alertLevelKey = "connectionalerts_alert_level";
-    private final String shouldAlertForFriendsKey = "connectionalerts_should_alert_for_friends";
-    private final String shouldAlertForPartyKey = "connectionalerts_should_alert_for_party";
+    private static ResidentMetadataManager instance;
+
+    private static final String ALERT_LEVEL_KEY = "connectionalerts_alert_level";
+    private static final String SHOULD_ALERT_FOR_FRIENDS_KEY = "connectionalerts_should_alert_for_friends";
+    private static final String SHOULD_ALERT_FOR_PARTY_KEY = "connectionalerts_should_alert_for_party";
+
+    private ResidentMetadataManager() {}
+
+    public static ResidentMetadataManager getInstance() {
+        if (instance == null) instance = new ResidentMetadataManager();
+        return instance;
+    }
 
     public void setResidentAlertLevel(Resident resident, AlertLevel alertLevel) {
-        if (!resident.hasMeta(alertLevelKey))
-            resident.addMetaData(new StringDataField(alertLevelKey, null));
+        if (!resident.hasMeta(ALERT_LEVEL_KEY))
+            resident.addMetaData(new StringDataField(ALERT_LEVEL_KEY, null));
 
-        StringDataField sdf = (StringDataField) resident.getMetadata(alertLevelKey);
+        StringDataField sdf = (StringDataField) resident.getMetadata(ALERT_LEVEL_KEY);
         if (sdf == null) return;
 
         sdf.setValue(alertLevel.toString());
@@ -25,17 +34,17 @@ public class ResidentMetadataManager {
     public AlertLevel getResidentAlertLevel(Resident resident) {
         if (resident == null) return null;
 
-        StringDataField sdf = (StringDataField) resident.getMetadata(alertLevelKey);
+        StringDataField sdf = (StringDataField) resident.getMetadata(ALERT_LEVEL_KEY);
         if (sdf == null) return AlertLevel.NONE;
 
         return AlertLevel.getAlertLevelByName(sdf.getValue());
     }
 
     public void setShouldAlertForFriends(Resident resident, boolean value) {
-        if (!resident.hasMeta(shouldAlertForFriendsKey))
-            resident.addMetaData(new BooleanDataField(shouldAlertForFriendsKey, null));
+        if (!resident.hasMeta(SHOULD_ALERT_FOR_FRIENDS_KEY))
+            resident.addMetaData(new BooleanDataField(SHOULD_ALERT_FOR_FRIENDS_KEY, null));
 
-        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(shouldAlertForFriendsKey);
+        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(SHOULD_ALERT_FOR_FRIENDS_KEY);
         if (bdf == null) return;
 
         bdf.setValue(value);
@@ -45,17 +54,17 @@ public class ResidentMetadataManager {
     public boolean getShouldAlertForFriends(Resident resident) {
         if (resident == null) return false;
 
-        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(shouldAlertForFriendsKey);
+        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(SHOULD_ALERT_FOR_FRIENDS_KEY);
         if (bdf == null) return false;
 
         return bdf.getValue();
     }
 
     public void setShouldAlertForParty(Resident resident, boolean value) {
-        if (!resident.hasMeta(shouldAlertForPartyKey))
-            resident.addMetaData(new BooleanDataField(shouldAlertForPartyKey, null));
+        if (!resident.hasMeta(SHOULD_ALERT_FOR_PARTY_KEY))
+            resident.addMetaData(new BooleanDataField(SHOULD_ALERT_FOR_PARTY_KEY, null));
 
-        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(shouldAlertForPartyKey);
+        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(SHOULD_ALERT_FOR_PARTY_KEY);
         if (bdf == null) return;
 
         bdf.setValue(value);
@@ -65,7 +74,7 @@ public class ResidentMetadataManager {
     public boolean getShouldAlertForParty(Resident resident) {
         if (resident == null) return false;
 
-        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(shouldAlertForPartyKey);
+        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(SHOULD_ALERT_FOR_PARTY_KEY);
         if (bdf == null) return false;
         return bdf.getValue();
     }

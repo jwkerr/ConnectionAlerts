@@ -36,12 +36,12 @@ public class ConnectionAlertsCommand implements TabExecutor {
             return true;
         }
 
+        ResidentMetadataManager rmm = ResidentMetadataManager.getInstance();
+
         AlertLevel alertLevel;
         switch (args[0]) {
             case "none" -> alertLevel = AlertLevel.NONE;
             case "friends" -> {
-                ResidentMetadataManager rmm = new ResidentMetadataManager();
-
                 boolean shouldAlertForFriends = rmm.getShouldAlertForFriends(resident);
                 rmm.setShouldAlertForFriends(resident, !shouldAlertForFriends);
                 if (shouldAlertForFriends) {
@@ -53,8 +53,6 @@ public class ConnectionAlertsCommand implements TabExecutor {
                 return true;
             }
             case "party" -> {
-                ResidentMetadataManager rmm = new ResidentMetadataManager();
-
                 boolean shouldAlertForParty = rmm.getShouldAlertForParty(resident);
                 rmm.setShouldAlertForParty(resident, !shouldAlertForParty);
                 if (shouldAlertForParty) {
@@ -74,7 +72,6 @@ public class ConnectionAlertsCommand implements TabExecutor {
             }
         }
 
-        ResidentMetadataManager rmm = new ResidentMetadataManager();
         rmm.setResidentAlertLevel(resident, alertLevel);
 
         player.sendMessage(Component.text("Successfully changed your alert level to " + alertLevel, NamedTextColor.GREEN));
