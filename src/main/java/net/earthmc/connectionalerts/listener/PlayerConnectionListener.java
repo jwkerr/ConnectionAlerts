@@ -51,17 +51,17 @@ public class PlayerConnectionListener implements Listener {
             Resident playerResident = townyAPI.getResident(player);
             if (playerResident == null) continue;
 
-            if (ResidentMetadataManager.getShouldAlertForFriends(playerResident) && playerResident.hasFriend(joiningResident)) {
+            if (ResidentMetadataManager.getInstance().getShouldAlertForFriends(playerResident) && playerResident.hasFriend(joiningResident)) {
                 sendFriendConnectionAlert(player, joiningResident, connectionType);
                 return;
             }
 
-            if (ResidentMetadataManager.getShouldAlertForParty(playerResident) && arePlayersInSameParty(player, joiningPlayer)) {
+            if (ResidentMetadataManager.getInstance().getShouldAlertForParty(playerResident) && arePlayersInSameParty(player, joiningPlayer)) {
                 sendPartyConnectionAlert(player, joiningResident, connectionType);
                 return;
             }
 
-            AlertLevel alertLevel = ResidentMetadataManager.getResidentAlertLevel(playerResident);
+            AlertLevel alertLevel = ResidentMetadataManager.getInstance().getResidentAlertLevel(playerResident);
             if (alertLevel == AlertLevel.NONE) continue;
 
             if (alertLevel == AlertLevel.TOWN) handleTownAlertLevel(playerResident, joiningResident, connectionType);
@@ -124,12 +124,14 @@ public class PlayerConnectionListener implements Listener {
 
     private void sendFriendConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
         if (player == null) return;
+
         String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, null);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.GREEN));
     }
 
     private void sendPartyConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
         if (player == null) return;
+
         Player residentPlayer = joiningResident.getPlayer();
 
         Party party = mcMMO.p.getPartyManager().getParties() // Using this horrific method because mcMMO's API doesn't work correctly if the player just joined
@@ -148,6 +150,7 @@ public class PlayerConnectionListener implements Listener {
 
     private void sendTownConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
         if (player == null) return;
+
         String prefix = joiningResident.isMayor() ? "\uD83D\uDC51" : null;
         String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, prefix);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.AQUA));
@@ -155,6 +158,7 @@ public class PlayerConnectionListener implements Listener {
 
     private void sendNationConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
         if (player == null) return;
+
         String prefix = joiningResident.isKing() ? "\uD83D\uDC51" : null;
         String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, prefix);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.YELLOW));
@@ -162,6 +166,7 @@ public class PlayerConnectionListener implements Listener {
 
     private void sendGenericConnectionAlert(Player player, Resident joiningResident, ConnectionType connectionType) {
         if (player == null) return;
+
         String connectionAlertString = getConnectionAlertString(joiningResident, connectionType, null);
         player.sendMessage(Component.text(connectionAlertString, NamedTextColor.GRAY));
     }

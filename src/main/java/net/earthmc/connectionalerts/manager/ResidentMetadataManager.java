@@ -7,65 +7,74 @@ import net.earthmc.connectionalerts.object.AlertLevel;
 
 public class ResidentMetadataManager {
 
-    private static final String alertLevelKey = "connectionalerts_alert_level";
-    private static final String shouldAlertForFriendsKey = "connectionalerts_should_alert_for_friends";
-    private static final String shouldAlertForPartyKey = "connectionalerts_should_alert_for_party";
+    private static ResidentMetadataManager instance;
 
-    public static void setResidentAlertLevel(Resident resident, AlertLevel alertLevel) {
-        if (!resident.hasMeta(alertLevelKey))
-            resident.addMetaData(new StringDataField(alertLevelKey, null));
+    private static final String ALERT_LEVEL_KEY = "connectionalerts_alert_level";
+    private static final String SHOULD_ALERT_FOR_FRIENDS_KEY = "connectionalerts_should_alert_for_friends";
+    private static final String SHOULD_ALERT_FOR_PARTY_KEY = "connectionalerts_should_alert_for_party";
 
-        StringDataField sdf = (StringDataField) resident.getMetadata(alertLevelKey);
+    private ResidentMetadataManager() {}
+
+    public static ResidentMetadataManager getInstance() {
+        if (instance == null) instance = new ResidentMetadataManager();
+        return instance;
+    }
+
+    public void setResidentAlertLevel(Resident resident, AlertLevel alertLevel) {
+        if (!resident.hasMeta(ALERT_LEVEL_KEY))
+            resident.addMetaData(new StringDataField(ALERT_LEVEL_KEY, null));
+
+        StringDataField sdf = (StringDataField) resident.getMetadata(ALERT_LEVEL_KEY);
         if (sdf == null) return;
 
         sdf.setValue(alertLevel.toString());
         resident.addMetaData(sdf);
     }
 
-    public static AlertLevel getResidentAlertLevel(Resident resident) {
+    public AlertLevel getResidentAlertLevel(Resident resident) {
         if (resident == null) return null;
 
-        StringDataField sdf = (StringDataField) resident.getMetadata(alertLevelKey);
+        StringDataField sdf = (StringDataField) resident.getMetadata(ALERT_LEVEL_KEY);
         if (sdf == null) return AlertLevel.NONE;
 
         return AlertLevel.getAlertLevelByName(sdf.getValue());
     }
 
-    public static void setShouldAlertForFriends(Resident resident, boolean value) {
-        if (!resident.hasMeta(shouldAlertForFriendsKey))
-            resident.addMetaData(new BooleanDataField(shouldAlertForFriendsKey, null));
+    public void setShouldAlertForFriends(Resident resident, boolean value) {
+        if (!resident.hasMeta(SHOULD_ALERT_FOR_FRIENDS_KEY))
+            resident.addMetaData(new BooleanDataField(SHOULD_ALERT_FOR_FRIENDS_KEY, null));
 
-        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(shouldAlertForFriendsKey);
+        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(SHOULD_ALERT_FOR_FRIENDS_KEY);
         if (bdf == null) return;
 
         bdf.setValue(value);
         resident.addMetaData(bdf);
     }
 
-    public static boolean getShouldAlertForFriends(Resident resident) {
+    public boolean getShouldAlertForFriends(Resident resident) {
         if (resident == null) return false;
 
-        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(shouldAlertForFriendsKey);
+        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(SHOULD_ALERT_FOR_FRIENDS_KEY);
         if (bdf == null) return false;
 
         return bdf.getValue();
     }
 
-    public static void setShouldAlertForParty(Resident resident, boolean value) {
-        if (!resident.hasMeta(shouldAlertForPartyKey))
-            resident.addMetaData(new BooleanDataField(shouldAlertForPartyKey, null));
+    public void setShouldAlertForParty(Resident resident, boolean value) {
+        if (!resident.hasMeta(SHOULD_ALERT_FOR_PARTY_KEY))
+            resident.addMetaData(new BooleanDataField(SHOULD_ALERT_FOR_PARTY_KEY, null));
 
-        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(shouldAlertForPartyKey);
+        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(SHOULD_ALERT_FOR_PARTY_KEY);
         if (bdf == null) return;
 
         bdf.setValue(value);
         resident.addMetaData(bdf);
     }
 
-    public static boolean getShouldAlertForParty(Resident resident) {
+    public boolean getShouldAlertForParty(Resident resident) {
         if (resident == null) return false;
 
-        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(shouldAlertForPartyKey);
+        BooleanDataField bdf = (BooleanDataField) resident.getMetadata(SHOULD_ALERT_FOR_PARTY_KEY);
         if (bdf == null) return false;
         return bdf.getValue();
     }
